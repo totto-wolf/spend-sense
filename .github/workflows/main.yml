@@ -9,6 +9,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
     
+    env:
+      JAVA_OPTS: -Xmx2048m
+      GRADLE_OPTS: -Xmx2048m
+    
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
