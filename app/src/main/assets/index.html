@@ -1,0 +1,2181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SpendSense - Smart Expense Tracker</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
+        
+        :root {
+            --primary: #00D09C;
+            --primary-glow: rgba(0, 208, 156, 0.3);
+            --secondary: #A871FF;
+            --secondary-glow: rgba(168, 113, 255, 0.3);
+            --accent: #FF6B9D;
+            --success: #00D09C;
+            --danger: #FF6B9D;
+            --bg-dark: #0D0D0D;
+            --bg-card: #1A1A1A;
+            --bg-elevated: #252525;
+            --text-primary: #FFFFFF;
+            --text-secondary: #A0A0A0;
+            --border: #2A2A2A;
+            --shadow: rgba(0, 0, 0, 0.4);
+            --glow-green: 0 0 20px rgba(0, 208, 156, 0.4);
+            --glow-purple: 0 0 20px rgba(168, 113, 255, 0.4);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+        
+        /* Landing Page */
+        .landing-page {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, #0D0D0D 0%, #1A1A1A 100%);
+            z-index: 10001;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        
+        .landing-page.hidden {
+            display: none;
+        }
+        
+        .landing-content {
+            max-width: 480px;
+            width: 100%;
+            text-align: center;
+            animation: fadeInUp 0.6s ease;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .landing-logo {
+            margin-bottom: 40px;
+        }
+        
+        .logo-icon {
+            font-size: 80px;
+            margin-bottom: 16px;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .landing-title {
+            font-family: 'Clash Display', 'Inter', sans-serif;
+            font-size: 48px;
+            font-weight: 700;
+            letter-spacing: -2px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+        
+        .landing-tagline {
+            margin-bottom: 48px;
+        }
+        
+        .landing-tagline h2 {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+        
+        .landing-tagline p {
+            font-size: 16px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 48px;
+        }
+        
+        .feature-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px 16px;
+            transition: all 0.3s;
+        }
+        
+        .feature-item:hover {
+            border-color: var(--primary);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0, 208, 156, 0.2);
+        }
+        
+        .feature-icon {
+            font-size: 36px;
+            margin-bottom: 12px;
+        }
+        
+        .feature-item h3 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 6px;
+        }
+        
+        .feature-item p {
+            font-size: 12px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+        
+        .google-signin-btn {
+            width: 100%;
+            padding: 18px;
+            background: white;
+            color: #1A1A1A;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            box-shadow: 0 4px 16px rgba(255, 255, 255, 0.1);
+        }
+        
+        .google-signin-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(255, 255, 255, 0.2);
+        }
+        
+        .google-signin-btn:active {
+            transform: translateY(0);
+        }
+        
+        .google-icon {
+            width: 24px;
+            height: 24px;
+        }
+        
+        .landing-footer {
+            margin-top: 24px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+        
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #1A1A1A 0%, #0D0D0D 100%);
+            color: white;
+            padding: 20px 20px 30px;
+            position: relative;
+            overflow: hidden;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, var(--primary-glow) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(-30px, 20px); }
+        }
+        
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .app-title {
+            font-family: 'Clash Display', 'Inter', sans-serif;
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            letter-spacing: -1px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .app-subtitle {
+            font-size: 14px;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+        
+        /* Onboarding Overlay */
+        .onboarding-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .onboarding-overlay.active {
+            display: flex;
+        }
+        
+        .onboarding-content {
+            background: var(--bg-card);
+            border-radius: 24px;
+            padding: 32px 24px;
+            max-width: 450px;
+            width: 100%;
+            border: 1px solid var(--border);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            animation: scaleIn 0.4s ease;
+        }
+        
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        .onboarding-icon {
+            font-size: 64px;
+            text-align: center;
+            margin-bottom: 20px;
+            animation: bounce 1s ease infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .onboarding-title {
+            font-family: 'Clash Display', 'Inter', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .onboarding-subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-bottom: 32px;
+            line-height: 1.6;
+        }
+        
+        .permission-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px;
+            background: var(--bg-elevated);
+            border-radius: 16px;
+            margin-bottom: 12px;
+            border: 1px solid var(--border);
+            transition: all 0.3s;
+        }
+        
+        .permission-item:hover {
+            border-color: var(--primary);
+            background: var(--bg-card);
+        }
+        
+        .permission-icon {
+            font-size: 32px;
+            min-width: 40px;
+            text-align: center;
+        }
+        
+        .permission-info h4 {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+        
+        .permission-info p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+        
+        .onboarding-note {
+            margin-top: 24px;
+            padding: 16px;
+            background: var(--bg-elevated);
+            border-radius: 12px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            border-left: 3px solid var(--secondary);
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+        
+        .onboarding-note-icon {
+            font-size: 18px;
+            margin-top: 2px;
+        }
+        
+        .continue-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, var(--primary), #00B383);
+            color: var(--bg-dark);
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 24px;
+            box-shadow: var(--glow-green);
+        }
+        
+        .continue-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px var(--primary-glow);
+        }
+        
+        .continue-btn:active {
+            transform: translateY(0);
+        }
+        
+        .continue-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .permission-status {
+            font-size: 20px;
+            margin-left: auto;
+        }
+        
+        /* Container */
+        .container {
+            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        /* Card */
+        .card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 24px var(--shadow);
+            transition: all 0.3s ease;
+            border: 1px solid var(--border);
+        }
+        
+        .card:hover {
+            border-color: var(--primary);
+            box-shadow: var(--glow-green);
+        }
+        
+        .card-title {
+            font-family: 'Clash Display', 'Inter', sans-serif;
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            letter-spacing: -0.5px;
+        }
+        
+        .card-icon {
+            width: 24px;
+            height: 24px;
+        }
+        
+        /* Date Range Picker */
+        .date-range {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+        
+        .date-input-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        
+        .date-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        input[type="date"] {
+            padding: 14px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-elevated);
+            color: var(--text-primary);
+            transition: all 0.3s;
+            color-scheme: dark;
+        }
+        
+        input[type="date"]:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: var(--glow-green);
+            background: var(--bg-card);
+        }
+        
+        /* Textarea */
+        textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 16px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            font-size: 14px;
+            font-family: 'Inter', monospace;
+            resize: vertical;
+            transition: all 0.3s;
+            background: var(--bg-elevated);
+            line-height: 1.6;
+            color: var(--text-primary);
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: var(--glow-green);
+            background: var(--bg-card);
+        }
+        
+        textarea::placeholder {
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+        
+        /* Button */
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, #00B383 100%);
+            color: var(--bg-dark);
+            box-shadow: var(--glow-green);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px var(--primary-glow);
+        }
+        
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+        
+        .btn-secondary {
+            background: var(--bg-elevated);
+            color: var(--primary);
+            border: 1px solid var(--primary);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--bg-card);
+            box-shadow: var(--glow-green);
+        }
+        
+        .btn-secondary:active {
+            background: var(--bg-dark);
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        /* Transaction Item */
+        .transaction-item {
+            background: var(--bg-elevated);
+            border-radius: 16px;
+            padding: 18px;
+            margin-bottom: 12px;
+            border-left: 3px solid var(--primary);
+            transition: all 0.3s;
+            animation: slideIn 0.3s ease forwards;
+            opacity: 0;
+            border: 1px solid var(--border);
+        }
+        
+        .transaction-item:hover {
+            background: var(--bg-card);
+            border-left-color: var(--secondary);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .transaction-item:nth-child(1) { animation-delay: 0.05s; }
+        .transaction-item:nth-child(2) { animation-delay: 0.1s; }
+        .transaction-item:nth-child(3) { animation-delay: 0.15s; }
+        .transaction-item:nth-child(4) { animation-delay: 0.2s; }
+        .transaction-item:nth-child(5) { animation-delay: 0.25s; }
+        
+        .transaction-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 8px;
+        }
+        
+        .transaction-merchant {
+            font-weight: 600;
+            font-size: 15px;
+            color: var(--text-primary);
+        }
+        
+        .transaction-amount {
+            font-weight: 700;
+            font-size: 20px;
+            font-family: 'Clash Display', 'Inter', sans-serif;
+            letter-spacing: -0.5px;
+        }
+        
+        .amount-expense {
+            color: var(--danger);
+        }
+        
+        .amount-income {
+            color: var(--success);
+        }
+        
+        .transaction-details {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+        
+        .transaction-date {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .transaction-card {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        /* Category Selection */
+        .category-select-wrapper {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        
+        select {
+            flex: 1;
+            padding: 12px 14px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-elevated);
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: var(--glow-green);
+        }
+        
+        select option {
+            background: var(--bg-card);
+            color: var(--text-primary);
+        }
+        
+        .category-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 600;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: var(--bg-dark);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        /* Category Management */
+        .category-manager {
+            margin-top: 15px;
+        }
+        
+        .category-input-group {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        
+        input[type="text"] {
+            flex: 1;
+            padding: 14px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-elevated);
+            transition: all 0.3s;
+            color: var(--text-primary);
+        }
+        
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: var(--glow-green);
+        }
+        
+        input[type="text"]::placeholder {
+            color: var(--text-secondary);
+        }
+        
+        .btn-small {
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        
+        .category-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .category-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.3s;
+            color: var(--text-primary);
+        }
+        
+        .category-chip:hover {
+            border-color: var(--danger);
+            background: var(--bg-card);
+            box-shadow: 0 0 12px rgba(255, 107, 157, 0.3);
+        }
+        
+        .delete-category {
+            cursor: pointer;
+            color: var(--danger);
+            font-weight: 700;
+            padding: 0 4px;
+            transition: transform 0.2s;
+        }
+        
+        .delete-category:hover {
+            transform: scale(1.2);
+        }
+        
+        /* Summary Cards */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .summary-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 20px;
+            border: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .summary-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+        }
+        
+        .summary-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+        
+        .summary-value {
+            font-family: 'Clash Display', 'Inter', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -1px;
+        }
+        
+        .summary-expenses {
+            color: var(--danger);
+        }
+        
+        .summary-income {
+            color: var(--success);
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-secondary);
+        }
+        
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.3;
+        }
+        
+        .empty-text {
+            font-size: 16px;
+            font-weight: 500;
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            animation: fadeIn 0.2s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: var(--bg-card);
+            border-radius: 24px;
+            padding: 28px;
+            max-width: 500px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s ease;
+            border: 1px solid var(--border);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -20px);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, 0);
+            }
+        }
+        
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+            }
+            to {
+                opacity: 0;
+            }
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .modal-title {
+            font-family: 'Clash Display', 'Inter', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+        
+        .close-modal {
+            font-size: 28px;
+            cursor: pointer;
+            color: var(--text-secondary);
+            line-height: 1;
+            transition: color 0.2s;
+        }
+        
+        .close-modal:hover {
+            color: var(--danger);
+        }
+        
+        /* Help Text */
+        .help-text {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-top: 8px;
+            line-height: 1.5;
+        }
+        
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--bg-card);
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0 calc(12px + env(safe-area-inset-bottom));
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+            z-index: 100;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: var(--text-secondary);
+            font-size: 11px;
+            font-weight: 600;
+            border-radius: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .nav-item.active {
+            color: var(--primary);
+            background: rgba(0, 208, 156, 0.1);
+            box-shadow: 0 0 12px var(--primary-glow);
+        }
+        
+        .nav-icon {
+            font-size: 24px;
+        }
+        
+        /* Screens */
+        .screen {
+            display: none;
+        }
+        
+        .screen.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        /* SMS Parsing Progress */
+        .parsing-progress {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background: var(--bg-elevated);
+            border-radius: 16px;
+            border: 1px solid var(--border);
+        }
+        
+        .parsing-progress.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .progress-text {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .progress-percentage {
+            font-family: 'Clash Display', 'Inter', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .progress-bar-container {
+            width: 100%;
+            height: 12px;
+            background: var(--bg-dark);
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            position: relative;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            width: 0%;
+            transition: width 0.3s ease;
+            position: relative;
+            box-shadow: 0 0 12px var(--primary-glow);
+        }
+        
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        .progress-status {
+            margin-top: 12px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .progress-spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Chart placeholder */
+        .chart-placeholder {
+            background: var(--bg-elevated);
+            border-radius: 16px;
+            padding: 40px 20px;
+            text-align: center;
+            border: 1px dashed var(--border);
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+<body>
+    <div id="appContainer" class="app-container" style="display: none;">
+    <div class="header">
+        <div class="header-content">
+            <h1 class="app-title">SpendSense</h1>
+            <p class="app-subtitle">Smart SMS-based expense tracking</p>
+        </div>
+    </div>
+    
+    <!-- Landing Page / Sign In Screen -->
+    <div id="landingPage" class="landing-page">
+        <div class="landing-content">
+            <div class="landing-logo">
+                <div class="logo-icon">💰</div>
+                <h1 class="landing-title">SpendSense</h1>
+            </div>
+            
+            <div class="landing-tagline">
+                <h2>Smart expense tracking</h2>
+                <p>Automatically parse your bank SMS messages and gain insights into your spending habits</p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-item">
+                    <div class="feature-icon">📊</div>
+                    <h3>Auto-categorize</h3>
+                    <p>Smart AI categorizes your transactions automatically</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">💳</div>
+                    <h3>SMS Parsing</h3>
+                    <p>Extract transactions from bank messages instantly</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">📈</div>
+                    <h3>Insights</h3>
+                    <p>Understand your spending patterns and save more</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">🔒</div>
+                    <h3>Private & Secure</h3>
+                    <p>All data processed locally on your device</p>
+                </div>
+            </div>
+            
+            <button class="google-signin-btn" id="googleSignInBtn">
+                <svg class="google-icon" viewBox="0 0 24 24">
+                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                </svg>
+                Continue with Google
+            </button>
+            
+            <p class="landing-footer">By signing in, you agree to our Terms of Service and Privacy Policy</p>
+        </div>
+    </div>
+    
+    <!-- Onboarding Permissions Overlay -->
+    <div id="onboardingOverlay" class="onboarding-overlay">
+        <div class="onboarding-content">
+            <div class="onboarding-icon">🔐</div>
+            <h2 class="onboarding-title">Welcome to SpendSense</h2>
+            <p class="onboarding-subtitle">To provide you with smart expense tracking, we need a few permissions</p>
+            
+            <div class="permission-item" id="onboardingSMS">
+                <div class="permission-icon">💬</div>
+                <div class="permission-info">
+                    <h4>SMS Access</h4>
+                    <p>Required to read bank transaction messages</p>
+                </div>
+                <div class="permission-status">⏳</div>
+            </div>
+            
+            <div class="permission-item" id="onboardingContacts">
+                <div class="permission-icon">👥</div>
+                <div class="permission-info">
+                    <h4>Contacts Access</h4>
+                    <p>Helps identify merchants from your contacts</p>
+                </div>
+                <div class="permission-status">⏳</div>
+            </div>
+            
+            <div class="onboarding-note">
+                <div class="onboarding-note-icon">🔒</div>
+                <div>
+                    <strong>Your privacy matters.</strong> All data is processed locally on your device. We never send your SMS or contact information to any server.
+                </div>
+            </div>
+            
+            <button class="continue-btn" id="requestPermissionsBtn">
+                Grant Permissions & Continue
+            </button>
+        </div>
+    </div>
+    
+    <!-- Import Screen -->
+    <div id="importScreen" class="screen active">
+        <div class="container">
+            <div class="card">
+                <h2 class="card-title">
+                    <svg class="card-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                    </svg>
+                    Select Date Range
+                </h2>
+                <div class="date-range">
+                    <div class="date-input-wrapper">
+                        <label class="date-label">From Date</label>
+                        <input type="date" id="fromDate" />
+                    </div>
+                    <div class="date-input-wrapper">
+                        <label class="date-label">To Date</label>
+                        <input type="date" id="toDate" />
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2 class="card-title">
+                    <svg class="card-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path>
+                    </svg>
+                    Paste SMS Messages
+                </h2>
+                <textarea id="smsInput" placeholder="Paste your bank SMS messages here...
+
+Example:
+INR 1,250.00 debited from A/c XX1234 on 12-Feb-26 at SWIGGY by card XX5678
+Your A/c XX1234 credited with INR 50,000.00 on 11-Feb-26. Available bal: INR 75,230.50
+Spent INR 899 at AMAZON using card XX5678 on 10-Feb-26"></textarea>
+                <p class="help-text">Paste SMS messages from your bank showing transactions. The app will automatically detect amounts, dates, merchants, and transaction types.</p>
+            </div>
+            
+            <button class="btn btn-primary" id="parseBtn">
+                Parse Transactions
+            </button>
+            
+            <!-- Parsing Progress Indicator -->
+            <div class="parsing-progress" id="parsingProgress">
+                <div class="progress-header">
+                    <div class="progress-text">Parsing SMS messages...</div>
+                    <div class="progress-percentage" id="progressPercentage">0%</div>
+                </div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="progressBar"></div>
+                </div>
+                <div class="progress-status" id="progressStatus">
+                    <div class="progress-spinner"></div>
+                    <span>Analyzing transactions...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Transactions Screen -->
+    <div id="transactionsScreen" class="screen">
+        <div class="container">
+            <div class="summary-grid" id="summaryCards"></div>
+            
+            <div class="card">
+                <div class="modal-header">
+                    <h2 class="card-title" style="margin: 0;">
+                        <svg class="card-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                        </svg>
+                        Transactions
+                    </h2>
+                    <button class="btn-secondary btn-small" id="manageCategoriesBtn">
+                        Categories
+                    </button>
+                </div>
+                <div id="transactionsList"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Analytics Screen -->
+    <div id="analyticsScreen" class="screen">
+        <div class="container">
+            <div class="card">
+                <h2 class="card-title">
+                    <svg class="card-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                    </svg>
+                    Spending by Category
+                </h2>
+                <div id="categoryAnalytics"></div>
+            </div>
+            
+            <div class="card">
+                <h2 class="card-title">
+                    <svg class="card-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                    </svg>
+                    Spending Insights
+                </h2>
+                <div id="insights"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Category Management Modal -->
+    <div id="categoryModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Manage Categories</h2>
+                <span class="close-modal" id="closeModal">&times;</span>
+            </div>
+            
+            <div class="category-manager">
+                <div class="category-input-group">
+                    <input type="text" id="newCategoryInput" placeholder="Enter new category name..." />
+                    <button class="btn-primary btn-small" id="addCategoryBtn">Add</button>
+                </div>
+                <p class="help-text">Create custom categories to organize your transactions</p>
+                
+                <div style="margin-top: 20px;">
+                    <h3 style="font-size: 14px; font-weight: 600; margin-bottom: 12px; color: var(--text-secondary);">YOUR CATEGORIES</h3>
+                    <div class="category-list" id="categoryList"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <div class="nav-item active" data-screen="importScreen">
+            <div class="nav-icon">📥</div>
+            <div>Import</div>
+        </div>
+        <div class="nav-item" data-screen="transactionsScreen">
+            <div class="nav-icon">💳</div>
+            <div>Transactions</div>
+        </div>
+        <div class="nav-item" data-screen="analyticsScreen">
+            <div class="nav-icon">📊</div>
+            <div>Analytics</div>
+        </div>
+    </div>
+    </div> <!-- End app-container -->
+
+    <script>
+        // Data storage
+        let transactions = [];
+        let categories = ['Food & Dining', 'Shopping', 'Bills & Utilities', 'Transportation', 'Entertainment', 'Healthcare', 'Groceries', 'Other'];
+        let permissions = {
+            sms: false,
+            contacts: false
+        };
+        let userAuth = {
+            isSignedIn: false,
+            email: '',
+            name: '',
+            picture: ''
+        };
+        
+        // Check authentication and first launch status
+        function checkAuth() {
+            const savedAuth = localStorage.getItem('userAuth');
+            const hasLaunched = localStorage.getItem('hasLaunched');
+            
+            if (savedAuth) {
+                userAuth = JSON.parse(savedAuth);
+                
+                if (userAuth.isSignedIn) {
+                    // User is signed in
+                    document.getElementById('landingPage').classList.add('hidden');
+                    document.getElementById('appContainer').style.display = 'block';
+                    
+                    if (!hasLaunched) {
+                        // Show onboarding for permissions
+                        document.getElementById('onboardingOverlay').classList.add('active');
+                    }
+                    return true;
+                }
+            }
+            
+            // Show landing page, hide app
+            document.getElementById('landingPage').classList.remove('hidden');
+            document.getElementById('appContainer').style.display = 'none';
+            return false;
+        }
+        
+        // Google Sign In
+        document.getElementById('googleSignInBtn').addEventListener('click', async () => {
+            const btn = document.getElementById('googleSignInBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<div class="progress-spinner" style="border-color: #ccc; border-top-color: #1A1A1A; margin: 0 auto;"></div>';
+            
+            try {
+                // Call native Android method
+                if (typeof Android !== 'undefined' && Android.signInWithGoogle) {
+                    Android.signInWithGoogle();
+                    // Result will come via handleGoogleSignIn callback
+                } else {
+                    // Web demo - simulate Google sign in
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                    handleGoogleSignIn({
+                        email: 'demo@example.com',
+                        name: 'Demo User',
+                        picture: ''
+                    });
+                }
+            } catch (error) {
+                console.error('Sign in error:', error);
+                alert('Failed to sign in with Google. Please try again.');
+                btn.disabled = false;
+                btn.innerHTML = '<svg class="google-icon" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>Continue with Google';
+            }
+        });
+        
+        // Callback from native Android after Google Sign-In
+        window.handleGoogleSignIn = function(result) {
+            const btn = document.getElementById('googleSignInBtn');
+            
+            if (result) {
+                userAuth = {
+                    isSignedIn: true,
+                    email: result.email,
+                    name: result.name,
+                    picture: result.picture
+                };
+                
+                // Save auth state
+                localStorage.setItem('userAuth', JSON.stringify(userAuth));
+                
+                // Hide landing page, show app
+                document.getElementById('landingPage').classList.add('hidden');
+                document.getElementById('appContainer').style.display = 'block';
+                
+                // Show onboarding for permissions
+                document.getElementById('onboardingOverlay').classList.add('active');
+            } else {
+                alert('Failed to sign in with Google. Please try again.');
+                btn.disabled = false;
+                btn.innerHTML = '<svg class="google-icon" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>Continue with Google';
+            }
+        };
+        
+        // Check if first launch
+        function checkFirstLaunch() {
+            const hasLaunched = localStorage.getItem('hasLaunched');
+            if (!hasLaunched && userAuth.isSignedIn) {
+                // First launch after sign in - show onboarding
+                document.getElementById('onboardingOverlay').classList.add('active');
+                return true;
+            }
+            return false;
+        }
+        
+        // Load saved data
+        function loadData() {
+            const savedTransactions = localStorage.getItem('transactions');
+            const savedCategories = localStorage.getItem('categories');
+            const savedPermissions = localStorage.getItem('permissions');
+            
+            if (savedTransactions) {
+                transactions = JSON.parse(savedTransactions);
+            }
+            if (savedCategories) {
+                categories = JSON.parse(savedCategories);
+            }
+            if (savedPermissions) {
+                permissions = JSON.parse(savedPermissions);
+            }
+        }
+        
+        // Save data
+        function saveData() {
+            localStorage.setItem('transactions', JSON.stringify(transactions));
+            localStorage.setItem('categories', JSON.stringify(categories));
+            localStorage.setItem('permissions', JSON.stringify(permissions));
+        }
+        
+        // Request all permissions on onboarding
+        document.getElementById('requestPermissionsBtn').addEventListener('click', async () => {
+            const btn = document.getElementById('requestPermissionsBtn');
+            btn.disabled = true;
+            btn.textContent = 'Requesting Permissions...';
+            
+            // Request SMS permission
+            await requestSMSPermissionOnboarding();
+            
+            // Small delay for better UX
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            // Request Contacts permission
+            await requestContactsPermissionOnboarding();
+            
+            // Mark as launched
+            localStorage.setItem('hasLaunched', 'true');
+            
+            // Wait a moment to show status
+            setTimeout(() => {
+                // Hide onboarding
+                document.getElementById('onboardingOverlay').classList.remove('active');
+                
+                // Show success message if both granted
+                if (permissions.sms && permissions.contacts) {
+                    showSuccessMessage('All permissions granted! Starting SMS parsing...');
+                } else if (permissions.sms) {
+                    showSuccessMessage('SMS permission granted! Starting SMS parsing...');
+                } else {
+                    alert('SMS permission is required for the app to function. Please enable it from your device settings.');
+                    return;
+                }
+                
+                // Auto-start SMS parsing after permissions
+                setTimeout(() => {
+                    autoStartSMSParsing();
+                }, 1500);
+            }, 1000);
+        });
+        
+        // Request SMS permission during onboarding
+        async function requestSMSPermissionOnboarding() {
+            try {
+                if (typeof Android !== 'undefined' && Android.requestSMSPermission) {
+                    // Native Android bridge - will callback via handleSMSPermission
+                    Android.requestSMSPermission();
+                    // Wait for callback
+                    await new Promise(resolve => {
+                        window.smsPermissionResolve = resolve;
+                    });
+                } else {
+                    // Web demo - simulate permission grant
+                    await new Promise(resolve => setTimeout(resolve, 800));
+                    permissions.sms = true; // Auto-grant in web demo
+                }
+                
+                // Update UI
+                const statusIcon = document.querySelector('#onboardingSMS .permission-status');
+                if (permissions.sms) {
+                    statusIcon.textContent = '✅';
+                    document.getElementById('onboardingSMS').style.borderColor = 'var(--primary)';
+                } else {
+                    statusIcon.textContent = '❌';
+                    document.getElementById('onboardingSMS').style.borderColor = 'var(--danger)';
+                }
+                
+                saveData();
+            } catch (error) {
+                console.error('SMS permission error:', error);
+                document.querySelector('#onboardingSMS .permission-status').textContent = '❌';
+            }
+        }
+        
+        // Callback from native Android after SMS permission request
+        window.handleSMSPermission = function(granted) {
+            permissions.sms = granted;
+            if (window.smsPermissionResolve) {
+                window.smsPermissionResolve();
+                window.smsPermissionResolve = null;
+            }
+        };
+        
+        // Request Contacts permission during onboarding
+        async function requestContactsPermissionOnboarding() {
+            try {
+                if (typeof Android !== 'undefined' && Android.requestContactsPermission) {
+                    // Native Android bridge - will callback via handleContactsPermission
+                    Android.requestContactsPermission();
+                    // Wait for callback
+                    await new Promise(resolve => {
+                        window.contactsPermissionResolve = resolve;
+                    });
+                } else {
+                    // Web demo - simulate permission grant
+                    await new Promise(resolve => setTimeout(resolve, 800));
+                    permissions.contacts = true; // Auto-grant in web demo
+                }
+                
+                // Update UI
+                const statusIcon = document.querySelector('#onboardingContacts .permission-status');
+                if (permissions.contacts) {
+                    statusIcon.textContent = '✅';
+                    document.getElementById('onboardingContacts').style.borderColor = 'var(--primary)';
+                } else {
+                    statusIcon.textContent = '⚠️';
+                    document.getElementById('onboardingContacts').style.borderColor = 'var(--secondary)';
+                }
+                
+                saveData();
+            } catch (error) {
+                console.error('Contacts permission error:', error);
+                document.querySelector('#onboardingContacts .permission-status').textContent = '❌';
+            }
+        }
+        
+        // Callback from native Android after Contacts permission request
+        window.handleContactsPermission = function(granted) {
+            permissions.contacts = granted;
+            if (window.contactsPermissionResolve) {
+                window.contactsPermissionResolve();
+                window.contactsPermissionResolve = null;
+            }
+        };
+        
+        // Show success message
+        function showSuccessMessage(message) {
+            const successDiv = document.createElement('div');
+            successDiv.style.cssText = `
+                position: fixed;
+                top: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: linear-gradient(135deg, var(--primary), var(--secondary));
+                color: var(--bg-dark);
+                padding: 16px 24px;
+                border-radius: 12px;
+                font-weight: 600;
+                z-index: 10000;
+                animation: slideDown 0.3s ease;
+                box-shadow: 0 4px 20px rgba(0, 208, 156, 0.4);
+                max-width: 90%;
+                text-align: center;
+            `;
+            successDiv.textContent = message;
+            document.body.appendChild(successDiv);
+            
+            setTimeout(() => {
+                successDiv.style.animation = 'fadeOut 0.3s ease';
+                setTimeout(() => successDiv.remove(), 300);
+            }, 3000);
+        }
+        
+        // Auto-start SMS parsing after permissions granted
+        async function autoStartSMSParsing() {
+            // Switch to import screen
+            switchScreen('importScreen');
+            
+            // Show progress indicator
+            const progressDiv = document.getElementById('parsingProgress');
+            const progressBar = document.getElementById('progressBar');
+            const progressPercentage = document.getElementById('progressPercentage');
+            const progressStatus = document.getElementById('progressStatus');
+            
+            progressDiv.classList.add('active');
+            
+            try {
+                let allMessages = [];
+                
+                if (typeof Android !== 'undefined' && Android.readAllSMS) {
+                    // Native Android - read SMS with progress
+                    const totalMessages = await Android.getSMSCount();
+                    let processedMessages = 0;
+                    
+                    // Simulate batch processing with progress updates
+                    const batchSize = 100;
+                    const batches = Math.ceil(totalMessages / batchSize);
+                    
+                    for (let i = 0; i < batches; i++) {
+                        const batch = await Android.readSMSBatch(i, batchSize);
+                        allMessages = allMessages.concat(batch);
+                        processedMessages += batch.length;
+                        
+                        const progress = Math.min(100, Math.round((processedMessages / totalMessages) * 100));
+                        progressBar.style.width = progress + '%';
+                        progressPercentage.textContent = progress + '%';
+                        progressStatus.querySelector('span').textContent = `Processed ${processedMessages} of ${totalMessages} messages...`;
+                        
+                        // Small delay for visual feedback
+                        await new Promise(resolve => setTimeout(resolve, 100));
+                    }
+                } else {
+                    // Web demo - simulate SMS reading with progress
+                    const simulatedMessages = `
+INR 1,250.00 debited from A/c XX1234 on 12-Feb-26 at SWIGGY by card XX5678
+Your A/c XX1234 credited with INR 50,000.00 on 11-Feb-26. Available bal: INR 75,230.50
+Spent INR 899 at AMAZON using card XX5678 on 10-Feb-26
+INR 450.00 debited from A/c XX1234 on 09-Feb-26 at UBER by card XX5678
+INR 2,500.00 debited from A/c XX1234 on 08-Feb-26 at BIGBASKET by card XX5678
+Spent INR 1,200 at NETFLIX on 07-Feb-26 using card XX5678
+INR 3,500.00 debited from A/c XX1234 on 06-Feb-26 at APOLLO PHARMACY by card XX5678
+Spent INR 750 at STARBUCKS on 05-Feb-26 using card XX5678
+INR 15,000.00 debited from A/c XX1234 on 04-Feb-26 at TANISHQ by card XX5678
+Your A/c XX1234 credited with INR 5,000.00 on 03-Feb-26
+                    `.trim();
+                    
+                    const lines = simulatedMessages.split('\n');
+                    const totalLines = lines.length;
+                    
+                    // Simulate progressive reading
+                    for (let i = 0; i <= totalLines; i++) {
+                        const progress = Math.round((i / totalLines) * 100);
+                        progressBar.style.width = progress + '%';
+                        progressPercentage.textContent = progress + '%';
+                        progressStatus.querySelector('span').textContent = `Processed ${i} of ${totalLines} messages...`;
+                        await new Promise(resolve => setTimeout(resolve, 300));
+                    }
+                    
+                    allMessages = [simulatedMessages];
+                }
+                
+                // Parse the messages
+                progressStatus.querySelector('span').textContent = 'Categorizing transactions...';
+                await new Promise(resolve => setTimeout(resolve, 500));
+                
+                // Set date range to last 30 days
+                const today = new Date();
+                const thirtyDaysAgo = new Date(today);
+                thirtyDaysAgo.setDate(today.getDate() - 30);
+                
+                const parsed = parseSMS(allMessages.join('\n'), thirtyDaysAgo.toISOString().split('T')[0], today.toISOString().split('T')[0]);
+                
+                if (parsed.length > 0) {
+                    transactions = [...transactions, ...parsed];
+                    saveData();
+                    
+                    // Complete progress
+                    progressBar.style.width = '100%';
+                    progressPercentage.textContent = '100%';
+                    progressStatus.innerHTML = '<span style="color: var(--primary);">✓ Parsing complete! Found ' + parsed.length + ' transactions.</span>';
+                    
+                    // Wait before switching to analytics
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                    
+                    // Hide progress
+                    progressDiv.classList.remove('active');
+                    
+                    // Switch to analytics screen
+                    switchScreen('analyticsScreen');
+                    renderTransactions();
+                    renderAnalytics();
+                    
+                    showSuccessMessage(`Successfully parsed ${parsed.length} transactions!`);
+                } else {
+                    progressStatus.innerHTML = '<span style="color: var(--danger);">No bank transactions found in SMS.</span>';
+                    await new Promise(resolve => setTimeout(resolve, 2000));
+                    progressDiv.classList.remove('active');
+                }
+                
+            } catch (error) {
+                console.error('SMS parsing error:', error);
+                progressStatus.innerHTML = '<span style="color: var(--danger);">Error parsing SMS. Please try again.</span>';
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                progressDiv.classList.remove('active');
+            }
+        }
+        
+        // Set default dates
+        function setDefaultDates() {
+            const today = new Date();
+            const thirtyDaysAgo = new Date(today);
+            thirtyDaysAgo.setDate(today.getDate() - 30);
+            
+            document.getElementById('toDate').valueAsDate = today;
+            document.getElementById('fromDate').valueAsDate = thirtyDaysAgo;
+        }
+        
+        // Parse SMS messages
+        function parseSMS(smsText, fromDate, toDate) {
+            const lines = smsText.split('\n').filter(line => line.trim());
+            const parsedTransactions = [];
+            
+            // Regex patterns for Indian banking SMS
+            const patterns = [
+                // Debit pattern: INR X debited from A/c ... on DD-MMM-YY at MERCHANT
+                /(?:INR|Rs\.?)\s*([\d,]+(?:\.\d{2})?)\s*(?:debited|spent|withdrawn|paid).*?(?:on|at)\s*(\d{1,2}[-\/]\w{3}[-\/]\d{2,4}).*?(?:at|from|to)\s*([A-Z][A-Za-z0-9\s&\-\.]+?)(?:\s+by card|\s+using|\s+ref|$)/i,
+                
+                // Credit pattern: A/c ... credited with INR X on DD-MMM-YY
+                /(?:credited|received|deposited).*?(?:INR|Rs\.?)\s*([\d,]+(?:\.\d{2})?).*?(?:on|at)\s*(\d{1,2}[-\/]\w{3}[-\/]\d{2,4})(?:.*?(?:from|by)\s*([A-Z][A-Za-z0-9\s&\-\.]+?))?/i,
+                
+                // Spent pattern: Spent INR X at MERCHANT
+                /(?:spent|paid)\s*(?:INR|Rs\.?)\s*([\d,]+(?:\.\d{2})?)\s*(?:at|to|on)\s*([A-Z][A-Za-z0-9\s&\-\.]+?).*?(?:on|at)\s*(\d{1,2}[-\/]\w{3}[-\/]\d{2,4})/i,
+                
+                // Generic pattern
+                /(?:INR|Rs\.?)\s*([\d,]+(?:\.\d{2})?)[^\d]*(\d{1,2}[-\/]\w{3}[-\/]\d{2,4})[^\w]*([A-Z][A-Za-z0-9\s&\-\.]+)/i
+            ];
+            
+            lines.forEach(line => {
+                for (const pattern of patterns) {
+                    const match = line.match(pattern);
+                    if (match) {
+                        const amount = parseFloat(match[1].replace(/,/g, ''));
+                        let dateStr = match[2];
+                        let merchant = match[3] ? match[3].trim() : 'Unknown';
+                        
+                        // Determine if it's debit or credit
+                        const isDebit = /debited|spent|withdrawn|paid/i.test(line);
+                        const type = isDebit ? 'expense' : 'income';
+                        
+                        // Parse date
+                        const date = parseDate(dateStr);
+                        
+                        // Check if date is within range
+                        const from = new Date(fromDate);
+                        const to = new Date(toDate);
+                        to.setHours(23, 59, 59, 999);
+                        
+                        if (date >= from && date <= to) {
+                            // Clean merchant name
+                            merchant = merchant
+                                .replace(/\s+by card.*$/i, '')
+                                .replace(/\s+using.*$/i, '')
+                                .replace(/\s+ref.*$/i, '')
+                                .replace(/\s+Available.*$/i, '')
+                                .trim();
+                            
+                            // Extract card info if present
+                            const cardMatch = line.match(/(?:card|a\/c).*?(XX?\d{4})/i);
+                            const card = cardMatch ? cardMatch[1] : null;
+                            
+                            parsedTransactions.push({
+                                id: Date.now() + Math.random(),
+                                amount: amount,
+                                merchant: merchant,
+                                date: date.toISOString().split('T')[0],
+                                type: type,
+                                card: card,
+                                category: autoCategorizeMerchant(merchant),
+                                rawText: line
+                            });
+                        }
+                        break;
+                    }
+                }
+            });
+            
+            return parsedTransactions;
+        }
+        
+        // Parse date from various formats
+        function parseDate(dateStr) {
+            // Handle DD-MMM-YY or DD-MMM-YYYY format
+            const parts = dateStr.split(/[-\/]/);
+            if (parts.length === 3) {
+                const day = parseInt(parts[0]);
+                const monthStr = parts[1].toLowerCase();
+                let year = parseInt(parts[2]);
+                
+                // Handle 2-digit year
+                if (year < 100) {
+                    year += 2000;
+                }
+                
+                const months = {
+                    jan: 0, feb: 1, mar: 2, apr: 3, may: 4, jun: 5,
+                    jul: 6, aug: 7, sep: 8, oct: 9, nov: 10, dec: 11
+                };
+                
+                const month = months[monthStr];
+                if (month !== undefined) {
+                    return new Date(year, month, day);
+                }
+            }
+            return new Date();
+        }
+        
+        // Auto-categorize based on merchant name
+        function autoCategorizeMerchant(merchant) {
+            const merchantLower = merchant.toLowerCase();
+            
+            if (/swiggy|zomato|restaurant|cafe|food|dominos|pizza|burger|mcdonald/i.test(merchantLower)) {
+                return 'Food & Dining';
+            }
+            if (/amazon|flipkart|shopping|store|mall|myntra|ajio/i.test(merchantLower)) {
+                return 'Shopping';
+            }
+            if (/uber|ola|rapido|metro|petrol|fuel|gas/i.test(merchantLower)) {
+                return 'Transportation';
+            }
+            if (/electricity|water|gas|recharge|mobile|internet|wifi|bill/i.test(merchantLower)) {
+                return 'Bills & Utilities';
+            }
+            if (/movie|cinema|netflix|prime|spotify|game/i.test(merchantLower)) {
+                return 'Entertainment';
+            }
+            if (/hospital|pharmacy|medical|doctor|health/i.test(merchantLower)) {
+                return 'Healthcare';
+            }
+            if (/bigbasket|grofers|grocery|supermarket|dmart/i.test(merchantLower)) {
+                return 'Groceries';
+            }
+            
+            return 'Other';
+        }
+        
+        // Render transactions
+        function renderTransactions() {
+            const list = document.getElementById('transactionsList');
+            
+            if (transactions.length === 0) {
+                list.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">📭</div>
+                        <div class="empty-text">No transactions found</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Sort by date (newest first)
+            const sorted = [...transactions].sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            list.innerHTML = sorted.map((txn, index) => `
+                <div class="transaction-item" style="animation-delay: ${index * 0.05}s">
+                    <div class="transaction-header">
+                        <div class="transaction-merchant">${txn.merchant}</div>
+                        <div class="transaction-amount ${txn.type === 'expense' ? 'amount-expense' : 'amount-income'}">
+                            ${txn.type === 'expense' ? '-' : '+'}₹${txn.amount.toLocaleString('en-IN', {minimumFractionDigits: 2})}
+                        </div>
+                    </div>
+                    <div class="transaction-details">
+                        <span class="transaction-date">
+                            📅 ${new Date(txn.date).toLocaleDateString('en-IN', {day: 'numeric', month: 'short', year: 'numeric'})}
+                        </span>
+                        ${txn.card ? `<span class="transaction-card">💳 ${txn.card}</span>` : ''}
+                    </div>
+                    <div class="category-select-wrapper">
+                        <select onchange="updateCategory(${txn.id}, this.value)">
+                            <option value="">Select Category</option>
+                            ${categories.map(cat => `
+                                <option value="${cat}" ${txn.category === cat ? 'selected' : ''}>${cat}</option>
+                            `).join('')}
+                        </select>
+                        ${txn.category ? `<span class="category-badge">${txn.category}</span>` : ''}
+                    </div>
+                </div>
+            `).join('');
+            
+            updateSummary();
+        }
+        
+        // Update transaction category
+        window.updateCategory = function(txnId, category) {
+            const txn = transactions.find(t => t.id === txnId);
+            if (txn) {
+                txn.category = category;
+                saveData();
+                renderTransactions();
+                renderAnalytics();
+            }
+        };
+        
+        // Update summary cards
+        function updateSummary() {
+            const totalExpense = transactions
+                .filter(t => t.type === 'expense')
+                .reduce((sum, t) => sum + t.amount, 0);
+            
+            const totalIncome = transactions
+                .filter(t => t.type === 'income')
+                .reduce((sum, t) => sum + t.amount, 0);
+            
+            const summary = document.getElementById('summaryCards');
+            summary.innerHTML = `
+                <div class="summary-card">
+                    <div class="summary-label">Total Expenses</div>
+                    <div class="summary-value summary-expenses">₹${totalExpense.toLocaleString('en-IN', {minimumFractionDigits: 2})}</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-label">Total Income</div>
+                    <div class="summary-value summary-income">₹${totalIncome.toLocaleString('en-IN', {minimumFractionDigits: 2})}</div>
+                </div>
+            `;
+        }
+        
+        // Render category analytics
+        function renderAnalytics() {
+            const expensesByCategory = {};
+            transactions
+                .filter(t => t.type === 'expense' && t.category)
+                .forEach(t => {
+                    expensesByCategory[t.category] = (expensesByCategory[t.category] || 0) + t.amount;
+                });
+            
+            const totalExpenses = Object.values(expensesByCategory).reduce((a, b) => a + b, 0);
+            
+            const analyticsDiv = document.getElementById('categoryAnalytics');
+            
+            if (Object.keys(expensesByCategory).length === 0) {
+                analyticsDiv.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">📊</div>
+                        <div class="empty-text">No categorized expenses yet</div>
+                    </div>
+                `;
+            } else {
+                const sortedCategories = Object.entries(expensesByCategory)
+                    .sort((a, b) => b[1] - a[1]);
+                
+                analyticsDiv.innerHTML = sortedCategories.map(([category, amount]) => {
+                    const percentage = (amount / totalExpenses * 100).toFixed(1);
+                    return `
+                        <div style="margin-bottom: 24px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                <span style="font-weight: 600; color: var(--text-primary);">${category}</span>
+                                <span style="font-weight: 700; color: var(--primary); font-family: 'Clash Display', 'Inter', sans-serif;">₹${amount.toLocaleString('en-IN', {minimumFractionDigits: 2})}</span>
+                            </div>
+                            <div style="background: var(--bg-dark); height: 10px; border-radius: 8px; overflow: hidden; border: 1px solid var(--border);">
+                                <div style="background: linear-gradient(90deg, var(--primary), var(--secondary)); height: 100%; width: ${percentage}%; transition: width 0.8s ease; box-shadow: 0 0 8px var(--primary-glow);"></div>
+                            </div>
+                            <div style="text-align: right; font-size: 12px; color: var(--text-secondary); margin-top: 6px; font-weight: 600;">${percentage}%</div>
+                        </div>
+                    `;
+                }).join('');
+            }
+            
+            renderInsights(expensesByCategory, totalExpenses);
+        }
+        
+        // Render insights
+        function renderInsights(expensesByCategory, totalExpenses) {
+            const insightsDiv = document.getElementById('insights');
+            
+            if (transactions.length === 0) {
+                insightsDiv.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">💡</div>
+                        <div class="empty-text">Import transactions to see insights</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            const insights = [];
+            
+            // Top spending category
+            if (Object.keys(expensesByCategory).length > 0) {
+                const topCategory = Object.entries(expensesByCategory).sort((a, b) => b[1] - a[1])[0];
+                insights.push(`🎯 Your highest spending is in <strong>${topCategory[0]}</strong> (₹${topCategory[1].toLocaleString('en-IN', {minimumFractionDigits: 2})})`);
+            }
+            
+            // Average transaction
+            const avgExpense = totalExpenses / transactions.filter(t => t.type === 'expense').length;
+            if (!isNaN(avgExpense)) {
+                insights.push(`💰 Your average transaction is ₹${avgExpense.toLocaleString('en-IN', {minimumFractionDigits: 2})}`);
+            }
+            
+            // Number of transactions
+            insights.push(`📈 You have <strong>${transactions.length} transactions</strong> in the selected period`);
+            
+            // Largest single expense
+            const largestExpense = transactions
+                .filter(t => t.type === 'expense')
+                .sort((a, b) => b.amount - a.amount)[0];
+            if (largestExpense) {
+                insights.push(`🔴 Largest expense: ₹${largestExpense.amount.toLocaleString('en-IN', {minimumFractionDigits: 2})} at <strong>${largestExpense.merchant}</strong>`);
+            }
+            
+            insightsDiv.innerHTML = insights.map(insight => `
+                <div style="padding: 16px; background: var(--bg-elevated); border-radius: 12px; margin-bottom: 12px; line-height: 1.6; border: 1px solid var(--border); color: var(--text-primary);">
+                    ${insight}
+                </div>
+            `).join('');
+        }
+        
+        // Render categories
+        function renderCategories() {
+            const list = document.getElementById('categoryList');
+            list.innerHTML = categories.map(cat => `
+                <div class="category-chip">
+                    ${cat}
+                    <span class="delete-category" onclick="deleteCategory('${cat}')">&times;</span>
+                </div>
+            `).join('');
+        }
+        
+        // Add category
+        document.getElementById('addCategoryBtn').addEventListener('click', () => {
+            const input = document.getElementById('newCategoryInput');
+            const newCategory = input.value.trim();
+            
+            if (newCategory && !categories.includes(newCategory)) {
+                categories.push(newCategory);
+                saveData();
+                renderCategories();
+                input.value = '';
+            }
+        });
+        
+        // Delete category
+        window.deleteCategory = function(category) {
+            if (confirm(`Delete category "${category}"?`)) {
+                categories = categories.filter(c => c !== category);
+                saveData();
+                renderCategories();
+                renderTransactions();
+            }
+        };
+        
+        // Parse button
+        document.getElementById('parseBtn').addEventListener('click', () => {
+            const smsText = document.getElementById('smsInput').value;
+            const fromDate = document.getElementById('fromDate').value;
+            const toDate = document.getElementById('toDate').value;
+            
+            if (!smsText.trim()) {
+                alert('Please paste some SMS messages');
+                return;
+            }
+            
+            if (!fromDate || !toDate) {
+                alert('Please select date range');
+                return;
+            }
+            
+            const parsed = parseSMS(smsText, fromDate, toDate);
+            
+            if (parsed.length === 0) {
+                alert('No transactions found in the selected date range');
+                return;
+            }
+            
+            transactions = [...transactions, ...parsed];
+            saveData();
+            
+            // Switch to transactions screen
+            switchScreen('transactionsScreen');
+            renderTransactions();
+            renderAnalytics();
+        });
+        
+        // Modal controls
+        document.getElementById('manageCategoriesBtn').addEventListener('click', () => {
+            document.getElementById('categoryModal').classList.add('active');
+            renderCategories();
+        });
+        
+        document.getElementById('closeModal').addEventListener('click', () => {
+            document.getElementById('categoryModal').classList.remove('active');
+        });
+        
+        document.getElementById('categoryModal').addEventListener('click', (e) => {
+            if (e.target.id === 'categoryModal') {
+                document.getElementById('categoryModal').classList.remove('active');
+            }
+        });
+        
+        // Bottom navigation
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const screen = item.dataset.screen;
+                switchScreen(screen);
+            });
+        });
+        
+        function switchScreen(screenId) {
+            // Update screens
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+            
+            // Update nav
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.querySelector(`[data-screen="${screenId}"]`).classList.add('active');
+            
+            // Refresh data if needed
+            if (screenId === 'transactionsScreen') {
+                renderTransactions();
+            } else if (screenId === 'analyticsScreen') {
+                renderAnalytics();
+            }
+        }
+        
+        // Initialize
+        loadData();
+        setDefaultDates();
+        checkAuth(); // Check if user is signed in
+        renderTransactions();
+        renderAnalytics();
+    </script>
+</body>
+</html>

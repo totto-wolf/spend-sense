@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="AppTheme" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:statusBarColor">#0D0D0D</item>
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
+    
+    <integer name="google_play_services_version">12451000</integer>
+</resources>
